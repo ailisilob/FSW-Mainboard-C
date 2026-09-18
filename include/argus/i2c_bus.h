@@ -32,6 +32,14 @@
 /* Defining time out of bus in case device pulls bus too long */
 #define I2C_timeout 10000
 
+/* Defining bus id to pass into bus init */
+typedef enum {
+    i2c_0 = 0,
+    i2c_1,
+    bus_count
+} i2c_bus_id_t;
+
+/* Defining status code for operations on bus and device */
 typedef enum {
     i2c_ok = 0,
     i2c_arg_err,
@@ -45,8 +53,6 @@ typedef enum {
 /* Defining I2C bus */
 typedef struct {
     i2c_inst_t *i2c; // either i2c0 or i2c1
-    uint8_t sda_pin;
-    uint8_t scl_pin;
     uint32_t baudrate; // returned by i2c_init (SDK)
     uint32_t timeout; // defaults to I2C_timeout
     bool init;
@@ -60,22 +66,21 @@ typedef struct {
 } i2c_device_t;
 
 /* Bus bring-up & operations */
-i2c_status_t i2c_bus_init(void);
-void i2c_bus_deinit(void);
-i2c_status_t i2c_bus_recover(void);
-i2c_status_t i2c_bus_lock(void);
-void i2c_bus_unlock(void);
+i2c_status_t i2c_bus_init(i2c_bus_t *bus, i2c_bus_id_t id, uint32_t baud, uint32_t time);
+void i2c_bus_deinit(i2c_bus_t *bus);
+i2c_status_t i2c_bus_recover(i2c_bus_t *bus);
+i2c_status_t i2c_bus_lock(i2c_bus_t *bus);
+void i2c_bus_unlock(i2c_bus_t *bus);
 
 /* Bus settings */
-i2c_status_t i2c_set_baud(void);
-i2c_status_t i2c_set_mode(void);
-i2c_status_t i2c_get_inst(void);
+i2c_status_t i2c_set_baud(i2c_bus_t *bus);
+i2c_status_t i2c_set_mode(i2c_bus_t *bus);
 
 /* Device operations */
-i2c_status_t i2c_device_init(void);
-i2c_status_t i2c_read(void);
-i2c_status_t i2c_write(void);
-i2c_status_t ic2_write_read(void);
+i2c_status_t i2c_device_init(i2c_device_t *dev, i2c_bus_t *bus);
+i2c_status_t i2c_read(i2c_device_t *dev, uint8_t *dst, size_t len);
+i2c_status_t i2c_write(i2c_device_t *dev, const uint8_t *src, size_t len);
+i2c_status_t ic2_write_read(i2c_device_t *dev, const uint8_t *src, uint8_t *dst, size_t len);
 
 /* Helper fxn for scanning devices on bus */
-i2c_status_t scan_bus(void);
+i2c_status_t scan_bus(i2c_bus_t *bus);
