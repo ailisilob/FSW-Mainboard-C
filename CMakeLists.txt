@@ -33,7 +33,19 @@ project(FSW-Mainboard-C C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-# Add executable. Default name is the project name, version 0.1
+# Hardware-independent ADM1176 register and conversion logic.
+add_library(argus_adm1176 STATIC
+        src/drivers/adm1176.c
+)
+target_include_directories(argus_adm1176 PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}/include
+)
+target_compile_options(argus_adm1176 PRIVATE
+        -Wall
+        -Wextra
+        -Werror
+        -Wpedantic
+)
 
 add_executable(FSW-Mainboard-C hello_world.c )
 
