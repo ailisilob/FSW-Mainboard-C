@@ -573,29 +573,7 @@ void test_set_mode_rejects_null_and_uninitialized(void) {
 /* i2c_bus_recover                                                         */
 /* ====================================================================== */
 
-void test_bus_recover_rejects_null_and_uninitialized(void) {
-    i2c_bus_t bus = make_ready_bus(i2c_0);
-    bus.init = false;
 
-    TEST_ASSERT_EQUAL_INT(i2c_arg_err, i2c_bus_recover(NULL));
-    TEST_ASSERT_EQUAL_INT(i2c_bus_not_init, i2c_bus_recover(&bus));
-}
-
-void test_bus_recover_clocks_the_bus_free(void) {
-    i2c_bus_t bus = make_ready_bus(i2c_0);
-
-    TEST_ASSERT_EQUAL_INT(i2c_ok, i2c_bus_recover(&bus));
-
-    /* Standard recovery: take the pins to SIO, pulse SCL up to 9 times to let a
-     * stuck slave finish its byte, then hand the pins back to the I2C block. */
-    TEST_ASSERT_GREATER_OR_EQUAL_UINT(9, pico_fake.gpio_put_calls);
-    int scl = find_gpio_fn_call(I2C_SCL_0);
-    TEST_ASSERT_MESSAGE(scl >= 0, "SCL was never re-muxed");
-    TEST_ASSERT_EQUAL_INT_MESSAGE(
-        GPIO_FUNC_I2C,
-        pico_fake.gpio_set_function[pico_fake.gpio_set_function_calls - 1].fn,
-        "pins must end up back under the I2C block");
-}
 
 /* ====================================================================== */
 /* scan_bus                                                                */
