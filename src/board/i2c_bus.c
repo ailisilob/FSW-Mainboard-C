@@ -13,7 +13,33 @@
 
 /* Bus bring-up & operations */
 i2c_status_t i2c_bus_init(i2c_bus_t *bus, i2c_bus_id_t id, uint32_t baud, uint32_t time) {
-    return i2c_busy;
+    /* Checking for non-existent bus */
+    if (bus == NULL || baud == 0 || id >= bus_count || id < 0) {return i2c_arg_err;}
+
+    if (id == i2c_0) {
+        bus->i2c = i2c0;
+        bus->sda = 24;
+        bus->scl = 25;
+    } else {
+        bus->i2c = i2c1;
+        bus->sda = 46;
+        bus->scl = 47;
+    }
+
+    gpio_set_function(bus->sda, GPIO_FUNC_I2C);
+    gpio_set_function(bus->scl, GPIO_FUNC_I2C);
+    gpio_pull_up(bus->sda);
+    gpio_pull_up(bus->scl);
+
+    bus->baudrate = i2c_init(bus->i2c, baud);
+    bus->timeout = time;
+
+    if (!mutex_is_initialized(&bus->lock)) {
+        mutex_init(&bus->lock);
+    }
+
+    bus->init = true;
+    return i2c_ok;
 }
 
 void i2c_bus_deinit(i2c_bus_t *bus) {
