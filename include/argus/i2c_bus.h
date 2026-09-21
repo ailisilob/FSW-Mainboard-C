@@ -19,7 +19,6 @@
 #include "pico/sync.h"
 #include "pico/stdlib.h"
 #include "pico/binary_info.h"
-#endif
 
 /* I2C buses on mainboard do not correspond to default values defined by SDK */
 #define I2C_SDA_0 24
@@ -86,3 +85,5 @@ i2c_status_t ic2_write_read(i2c_device_t *dev, const uint8_t *src, uint8_t *dst,
 
 /* Helper fxn for scanning devices on bus */
 i2c_status_t scan_bus(i2c_bus_t *bus);
+
+#endif /* I2C_BUS */

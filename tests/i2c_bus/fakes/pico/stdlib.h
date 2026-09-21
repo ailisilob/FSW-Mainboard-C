@@ -12,7 +12,10 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
+/* Deliberately NOT <stdio.h>: the real pico/stdlib.h does not pull it in
+ * (its chain reaches <stdarg.h> only), so neither does this. Providing it
+ * here would let a missing #include in the driver build on the host and
+ * fail only on the ARM target. */
 
 typedef unsigned int uint;
 

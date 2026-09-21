@@ -27,6 +27,7 @@
 
 #include "pico_fake.h"
 
+#include <stdio.h>   /* snprintf, for assertion messages */
 #include <string.h>
 
 /* Reserved I2C address ranges: 0x00-0x07 and 0x78-0x7F. */
@@ -563,10 +564,41 @@ void test_set_baud_rejects_null_and_uninitialized(void) {
 void test_set_mode_rejects_null_and_uninitialized(void) {
     i2c_bus_t bus = make_ready_bus(i2c_0);
     i2c_device_t dev = make_device(&bus, 0x36);
+    i2c_device_t orphan = make_device(NULL, 0x36); /* device bound to no bus */
     bus.init = false;
 
     TEST_ASSERT_EQUAL_INT(i2c_arg_err, i2c_set_mode(NULL, false));
-    TEST_ASSERT_EQUAL_INT(i2c_bus_not_init, i2c_set_mode(&bus, false));
+    TEST_ASSERT_EQUAL_INT(i2c_arg_err, i2c_set_mode(&orphan, false));
+    TEST_ASSERT_EQUAL_INT(i2c_bus_not_init, i2c_set_mode(&dev, false));
+    TEST_ASSERT_EQUAL_UINT(0, pico_fake.i2c_set_slave_mode_calls);
+}
+
+void test_set_mode_switches_the_controller_to_slave(void) {
+    i2c_bus_t bus = make_ready_bus(i2c_1);
+    i2c_device_t dev = make_device(&bus, 0x36);
+
+    TEST_ASSERT_EQUAL_INT(i2c_ok, i2c_set_mode(&dev, true));
+
+    TEST_ASSERT_EQUAL_UINT(1, pico_fake.i2c_set_slave_mode_calls);
+    TEST_ASSERT_EQUAL_PTR(i2c1, pico_fake.i2c_set_slave_mode_inst);
+    TEST_ASSERT_TRUE(pico_fake.i2c_set_slave_mode_slave);
+    /* Pins CURRENT behaviour, which is under review: the SDK treats this
+     * argument as the address our own controller answers to, so forwarding the
+     * peer's address makes the board impersonate that device. If the API grows
+     * an explicit local-address parameter, this assertion should change with
+     * it rather than be deleted. */
+    TEST_ASSERT_EQUAL_UINT8(0x36, pico_fake.i2c_set_slave_mode_addr);
+}
+
+void test_set_mode_switches_the_controller_back_to_master(void) {
+    i2c_bus_t bus = make_ready_bus(i2c_0);
+    i2c_device_t dev = make_device(&bus, 0x36);
+
+    TEST_ASSERT_EQUAL_INT(i2c_ok, i2c_set_mode(&dev, false));
+
+    TEST_ASSERT_EQUAL_UINT(1, pico_fake.i2c_set_slave_mode_calls);
+    TEST_ASSERT_EQUAL_PTR(i2c0, pico_fake.i2c_set_slave_mode_inst);
+    TEST_ASSERT_FALSE(pico_fake.i2c_set_slave_mode_slave);
 }
 
 /* ====================================================================== */

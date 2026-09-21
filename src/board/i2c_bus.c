@@ -11,6 +11,9 @@
 #include "argus/i2c_bus.h"
 #include "hardware/gpio.h"
 
+/* printf() in scan_bus(); the SDK's pico/stdlib.h does not pull this in. */
+#include <stdio.h>
+
 /* Bus bring-up & operations */
 i2c_status_t i2c_bus_init(i2c_bus_t *bus, i2c_bus_id_t id, uint32_t baud, uint32_t time) {
     /* Checking for non-existent bus and other errors*/
