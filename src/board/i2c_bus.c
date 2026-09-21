@@ -143,15 +143,15 @@ i2c_status_t i2c_write(i2c_device_t *dev, const uint8_t *src, size_t len) {
     i2c_status_t status = i2c_bus_lock(dev->bus);
     if (status != i2c_ok) {return status;}
 
-    /* Read device */
-    int bytes_read = i2c_write_timeout_us(dev->bus->i2c, dev->addr, src, len, false, dev->bus->timeout);
+    /* Write to device */
+    int bytes_write = i2c_write_timeout_us(dev->bus->i2c, dev->addr, src, len, false, dev->bus->timeout);
     
     /* Unlock bus */
     i2c_bus_unlock(dev->bus);
 
-    if (bytes_read == PICO_ERROR_GENERIC) {
+    if (bytes_write == PICO_ERROR_GENERIC) {
         return i2c_nack_err;
-    } else if (bytes_read == PICO_ERROR_TIMEOUT) {
+    } else if (bytes_write == PICO_ERROR_TIMEOUT) {
         return i2c_timeout;
     } else {
         return i2c_ok;
@@ -159,7 +159,39 @@ i2c_status_t i2c_write(i2c_device_t *dev, const uint8_t *src, size_t len) {
 }
 
 i2c_status_t ic2_write_read(i2c_device_t *dev, const uint8_t *src, uint8_t *dst, size_t len) {
-    return i2c_busy;
+    /* Checking for non-existent device and other errors */
+    if (dev == NULL || src == NULL || dst == NULL || len == 0) {return i2c_arg_err;}
+    if (dev->bus == NULL) {return i2c_dev_not_init;}
+    if (!dev->bus->init) {return i2c_bus_not_init;}
+
+    /* Acquire lock on bus */
+    i2c_status_t status = i2c_bus_lock(dev->bus);
+    if (status != i2c_ok) {return status;}
+
+    /* Write to device */
+    int bytes_write = i2c_write_timeout_us(dev->bus->i2c, dev->addr, src, len, true, dev->bus->timeout);
+    
+    if (bytes_write == PICO_ERROR_GENERIC) {
+        status = i2c_nack_err;
+    } else if (bytes_write == PICO_ERROR_TIMEOUT) {
+        status = i2c_timeout;
+    }
+
+    if (status == i2c_ok) {
+        /* Read device */
+        int bytes_read = i2c_read_timeout_us(dev->bus->i2c, dev->addr, dst, len, false, dev->bus->timeout);
+    
+        if (bytes_read == PICO_ERROR_GENERIC) {
+            status = i2c_nack_err;
+        } else if (bytes_read == PICO_ERROR_TIMEOUT) {
+            status = i2c_timeout;
+        }
+    }
+
+    /* Unlock bus */
+    i2c_bus_unlock(dev->bus);
+
+    return status;
 }
 
 /* Helper fxn for scan_bus */
