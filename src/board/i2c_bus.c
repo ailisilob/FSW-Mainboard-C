@@ -63,7 +63,16 @@ i2c_status_t i2c_bus_recover(i2c_bus_t *bus) {
 }
 
 i2c_status_t i2c_bus_lock(i2c_bus_t *bus) {
-    return i2c_busy;
+    /* Check for non-existent bus */
+    if (bus == NULL) {return i2c_arg_err;}
+    if (!bus->init) {return i2c_bus_not_init;}
+
+    /* Try to get mutex lock */
+    if (!mutex_enter_timeout_us(&bus->lock, bus->timeout)) {
+        return i2c_busy;
+    }
+
+    return i2c_ok;
 }
 
 void i2c_bus_unlock(i2c_bus_t *bus) {
