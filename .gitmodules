@@ -1,3 +1,6 @@
 [submodule "external/CMock"]
 	path = external/CMock
 	url = https://github.com/ThrowTheSwitch/CMock.git
+[submodule "unity"]
+	path = unity
+	url = https://github.com/ThrowTheSwitch/Unity.git
