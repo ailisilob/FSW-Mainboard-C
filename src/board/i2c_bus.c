@@ -87,8 +87,14 @@ void i2c_bus_unlock(i2c_bus_t *bus) {
 }
 
 /* Bus settings */
-i2c_status_t i2c_set_baud(i2c_bus_t *bus) {
-    return i2c_busy;
+i2c_status_t i2c_set_baud(i2c_bus_t *bus, uint32_t baud) {
+    /* Checking for non-existent bus */
+    if (bus == NULL || baud == 0) {return i2c_arg_err;}
+    if (!bus->init) {return i2c_bus_not_init;}
+
+    bus->baudrate = i2c_set_baudrate(bus->i2c, baud);
+    
+    return i2c_ok;
 }
 
 i2c_status_t i2c_set_mode(i2c_bus_t *bus) {

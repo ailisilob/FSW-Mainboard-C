@@ -75,7 +75,7 @@ i2c_status_t i2c_bus_lock(i2c_bus_t *bus);
 void i2c_bus_unlock(i2c_bus_t *bus);
 
 /* Bus settings */
-i2c_status_t i2c_set_baud(i2c_bus_t *bus);
+i2c_status_t i2c_set_baud(i2c_bus_t *bus, uint32_t baud);
 i2c_status_t i2c_set_mode(i2c_bus_t *bus);
 
 /* Device operations */

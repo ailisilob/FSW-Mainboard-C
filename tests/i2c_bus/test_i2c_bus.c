@@ -545,9 +545,8 @@ void test_bus_unlock_null_is_a_noop(void) {
 
 void test_set_baud_pushes_to_hardware(void) {
     i2c_bus_t bus = make_ready_bus(i2c_0);
-    bus.baudrate = 100000;
 
-    TEST_ASSERT_EQUAL_INT(i2c_ok, i2c_set_baud(&bus));
+    TEST_ASSERT_EQUAL_INT(i2c_ok, i2c_set_baud(&bus, 100000));
     TEST_ASSERT_EQUAL_UINT(1, pico_fake.i2c_set_baudrate_calls);
     TEST_ASSERT_EQUAL_PTR(i2c0, pico_fake.i2c_set_baudrate_inst);
     TEST_ASSERT_EQUAL_UINT(100000, pico_fake.i2c_set_baudrate_baud);
@@ -557,8 +556,8 @@ void test_set_baud_rejects_null_and_uninitialized(void) {
     i2c_bus_t bus = make_ready_bus(i2c_0);
     bus.init = false;
 
-    TEST_ASSERT_EQUAL_INT(i2c_arg_err, i2c_set_baud(NULL));
-    TEST_ASSERT_EQUAL_INT(i2c_bus_not_init, i2c_set_baud(&bus));
+    TEST_ASSERT_EQUAL_INT(i2c_arg_err, i2c_set_baud(NULL, 1));
+    TEST_ASSERT_EQUAL_INT(i2c_bus_not_init, i2c_set_baud(&bus, 1));
 }
 
 void test_set_mode_rejects_null_and_uninitialized(void) {
