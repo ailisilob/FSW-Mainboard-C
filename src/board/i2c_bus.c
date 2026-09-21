@@ -76,6 +76,13 @@ i2c_status_t i2c_bus_lock(i2c_bus_t *bus) {
 }
 
 void i2c_bus_unlock(i2c_bus_t *bus) {
+    /* Check for non-existent bus */
+    if (bus == NULL) {return;}
+    if (!bus->init) {return;}
+
+    /* Try to release mutex */
+    mutex_exit(&bus->lock);
+
     return;
 }
 
