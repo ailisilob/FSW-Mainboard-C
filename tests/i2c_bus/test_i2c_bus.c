@@ -346,8 +346,6 @@ void test_read_rejects_null_arguments(void) {
 }
 
 void test_read_issues_a_transfer_to_the_device(void) {
-    TEST_IGNORE_MESSAGE("i2c_read() has no success path yet");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     i2c_device_t dev = make_device(&bus, 0x36);
     uint8_t buf[4] = {0};
@@ -364,8 +362,6 @@ void test_read_issues_a_transfer_to_the_device(void) {
 }
 
 void test_read_honours_the_bus_timeout(void) {
-    TEST_IGNORE_MESSAGE("i2c_read() does not use bus->timeout yet");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     i2c_device_t dev = make_device(&bus, 0x36);
     uint8_t buf[2] = {0};
@@ -379,8 +375,6 @@ void test_read_honours_the_bus_timeout(void) {
 }
 
 void test_read_reports_nack(void) {
-    TEST_IGNORE_MESSAGE("i2c_read() has no error mapping yet");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     i2c_device_t dev = make_device(&bus, 0x36);
     uint8_t buf[2] = {0};
@@ -391,8 +385,6 @@ void test_read_reports_nack(void) {
 }
 
 void test_read_reports_timeout(void) {
-    TEST_IGNORE_MESSAGE("i2c_read() has no error mapping yet");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     i2c_device_t dev = make_device(&bus, 0x36);
     uint8_t buf[2] = {0};
@@ -404,8 +396,6 @@ void test_read_reports_timeout(void) {
 }
 
 void test_read_rejects_uninitialized_bus(void) {
-    TEST_IGNORE_MESSAGE("i2c_read() does not check bus->init yet");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     bus.init = false;
     i2c_device_t dev = make_device(&bus, 0x36);
@@ -416,8 +406,6 @@ void test_read_rejects_uninitialized_bus(void) {
 }
 
 void test_read_rejects_device_with_no_bus(void) {
-    TEST_IGNORE_MESSAGE("i2c_read() does not check dev->bus yet");
-
     i2c_device_t dev = make_device(NULL, 0x36);
     uint8_t buf[2] = {0};
 
@@ -440,8 +428,6 @@ void test_write_rejects_null_arguments(void) {
 }
 
 void test_write_issues_a_transfer_to_the_device(void) {
-    TEST_IGNORE_MESSAGE("i2c_write() has no success path yet");
-
     i2c_bus_t bus = make_ready_bus(i2c_1);
     i2c_device_t dev = make_device(&bus, 0x36);
     const uint8_t payload[3] = {0x0A, 0x0B, 0x0C};
@@ -458,8 +444,6 @@ void test_write_issues_a_transfer_to_the_device(void) {
 }
 
 void test_write_reports_nack(void) {
-    TEST_IGNORE_MESSAGE("i2c_write() has no error mapping yet");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     i2c_device_t dev = make_device(&bus, 0x36);
     const uint8_t payload[1] = {0xFF};
@@ -470,8 +454,6 @@ void test_write_reports_nack(void) {
 }
 
 void test_write_rejects_uninitialized_bus(void) {
-    TEST_IGNORE_MESSAGE("i2c_write() does not check bus->init yet");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     bus.init = false;
     i2c_device_t dev = make_device(&bus, 0x36);
@@ -486,8 +468,6 @@ void test_write_rejects_uninitialized_bus(void) {
 /* ====================================================================== */
 
 void test_write_read_rejects_null_arguments(void) {
-    TEST_IGNORE_MESSAGE("ic2_write_read() is unimplemented");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     i2c_device_t dev = make_device(&bus, 0x36);
     const uint8_t reg[1] = {0x02};
@@ -500,8 +480,6 @@ void test_write_read_rejects_null_arguments(void) {
 }
 
 void test_write_read_does_a_repeated_start(void) {
-    TEST_IGNORE_MESSAGE("ic2_write_read() is unimplemented");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     i2c_device_t dev = make_device(&bus, 0x36);
     const uint8_t reg[1] = {0x02};
@@ -525,8 +503,6 @@ void test_write_read_does_a_repeated_start(void) {
 /* ====================================================================== */
 
 void test_bus_lock_takes_the_mutex(void) {
-    TEST_IGNORE_MESSAGE("i2c_bus_lock() is unimplemented");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
 
     TEST_ASSERT_EQUAL_INT(i2c_ok, i2c_bus_lock(&bus));
@@ -534,8 +510,6 @@ void test_bus_lock_takes_the_mutex(void) {
 }
 
 void test_bus_lock_rejects_null_and_uninitialized(void) {
-    TEST_IGNORE_MESSAGE("i2c_bus_lock() is unimplemented");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     bus.init = false;
 
@@ -544,8 +518,6 @@ void test_bus_lock_rejects_null_and_uninitialized(void) {
 }
 
 void test_bus_lock_reports_busy_when_contended(void) {
-    TEST_IGNORE_MESSAGE("i2c_bus_lock() is unimplemented");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     pico_fake.mutex_contended = true;
 
@@ -553,8 +525,6 @@ void test_bus_lock_reports_busy_when_contended(void) {
 }
 
 void test_bus_unlock_releases_the_mutex(void) {
-    TEST_IGNORE_MESSAGE("i2c_bus_unlock() is unimplemented");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     (void)i2c_bus_lock(&bus);
 
@@ -565,8 +535,6 @@ void test_bus_unlock_releases_the_mutex(void) {
 }
 
 void test_bus_unlock_null_is_a_noop(void) {
-    TEST_IGNORE_MESSAGE("i2c_bus_unlock() is unimplemented");
-
     i2c_bus_unlock(NULL);
     TEST_ASSERT_EQUAL_UINT(0, pico_fake.mutex_exit_calls);
 }
@@ -576,9 +544,6 @@ void test_bus_unlock_null_is_a_noop(void) {
 /* ====================================================================== */
 
 void test_set_baud_pushes_to_hardware(void) {
-    TEST_IGNORE_MESSAGE(
-        "i2c_set_baud() is unimplemented, and its signature takes no baud rate to set");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     bus.baudrate = 100000;
 
@@ -589,8 +554,6 @@ void test_set_baud_pushes_to_hardware(void) {
 }
 
 void test_set_baud_rejects_null_and_uninitialized(void) {
-    TEST_IGNORE_MESSAGE("i2c_set_baud() is unimplemented");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     bus.init = false;
 
@@ -599,8 +562,6 @@ void test_set_baud_rejects_null_and_uninitialized(void) {
 }
 
 void test_set_mode_rejects_null_and_uninitialized(void) {
-    TEST_IGNORE_MESSAGE("i2c_set_mode() is unimplemented and its contract is undefined");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     bus.init = false;
 
@@ -613,8 +574,6 @@ void test_set_mode_rejects_null_and_uninitialized(void) {
 /* ====================================================================== */
 
 void test_bus_recover_rejects_null_and_uninitialized(void) {
-    TEST_IGNORE_MESSAGE("i2c_bus_recover() is unimplemented");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
     bus.init = false;
 
@@ -623,8 +582,6 @@ void test_bus_recover_rejects_null_and_uninitialized(void) {
 }
 
 void test_bus_recover_clocks_the_bus_free(void) {
-    TEST_IGNORE_MESSAGE("i2c_bus_recover() is unimplemented");
-
     i2c_bus_t bus = make_ready_bus(i2c_0);
 
     TEST_ASSERT_EQUAL_INT(i2c_ok, i2c_bus_recover(&bus));

@@ -13,7 +13,7 @@
 
 /* Bus bring-up & operations */
 i2c_status_t i2c_bus_init(i2c_bus_t *bus, i2c_bus_id_t id, uint32_t baud, uint32_t time) {
-    /* Checking for non-existent bus */
+    /* Checking for non-existent bus and other errors*/
     if (bus == NULL || baud == 0 || id >= bus_count || id < 0) {return i2c_arg_err;}
 
     if (id == i2c_0) {
@@ -43,7 +43,19 @@ i2c_status_t i2c_bus_init(i2c_bus_t *bus, i2c_bus_id_t id, uint32_t baud, uint32
 }
 
 void i2c_bus_deinit(i2c_bus_t *bus) {
-    return;
+    /* Checking for non-existent bus */
+    if (bus == NULL) {return;}
+    /* Check for uinit bus */
+    if (bus->init == false) {return;}
+
+    /* Release pins */
+    gpio_set_function(bus->sda, GPIO_FUNC_SIO);
+    gpio_set_function(bus->scl, GPIO_FUNC_SIO);
+
+    /* Deinit HW Block */
+    i2c_deinit(bus->i2c);
+
+    bus->init = false;
 }
 
 i2c_status_t i2c_bus_recover(i2c_bus_t *bus) {
