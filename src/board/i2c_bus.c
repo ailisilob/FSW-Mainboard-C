@@ -81,7 +81,15 @@ i2c_status_t i2c_set_mode(i2c_bus_t *bus) {
 
 /* Device operations */
 i2c_status_t i2c_device_init(i2c_device_t *dev, i2c_bus_t *bus, uint8_t addr) {
-    return i2c_busy;
+    /* Checking for non-existent device/bus and other errors */
+    if (dev == NULL || bus == NULL || addr < 0x08 || addr >= 0x78) {return i2c_arg_err;}
+    /* Check for init bus */
+    if (bus->init == false) {return i2c_bus_not_init;}
+
+    dev->addr = addr;
+    dev->bus = bus;
+
+    return i2c_ok;
 }
 
 i2c_status_t i2c_read(i2c_device_t *dev, uint8_t *dst, size_t len) {
