@@ -562,10 +562,11 @@ void test_set_baud_rejects_null_and_uninitialized(void) {
 
 void test_set_mode_rejects_null_and_uninitialized(void) {
     i2c_bus_t bus = make_ready_bus(i2c_0);
+    i2c_device_t dev = make_device(&bus, 0x36);
     bus.init = false;
 
-    TEST_ASSERT_EQUAL_INT(i2c_arg_err, i2c_set_mode(NULL));
-    TEST_ASSERT_EQUAL_INT(i2c_bus_not_init, i2c_set_mode(&bus));
+    TEST_ASSERT_EQUAL_INT(i2c_arg_err, i2c_set_mode(NULL, false));
+    TEST_ASSERT_EQUAL_INT(i2c_bus_not_init, i2c_set_mode(&bus, false));
 }
 
 /* ====================================================================== */

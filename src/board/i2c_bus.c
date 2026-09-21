@@ -97,8 +97,14 @@ i2c_status_t i2c_set_baud(i2c_bus_t *bus, uint32_t baud) {
     return i2c_ok;
 }
 
-i2c_status_t i2c_set_mode(i2c_bus_t *bus) {
-    return i2c_busy;
+i2c_status_t i2c_set_mode(i2c_device_t *dev, bool slave) {
+    /* Checking for non-existent bus */
+    if (dev == NULL || dev->bus == NULL) {return i2c_arg_err;}
+    if (!dev->bus->init) {return i2c_bus_not_init;}
+
+    i2c_set_slave_mode(dev->bus->i2c, slave, dev->addr);
+    
+    return i2c_ok;
 }
 
 /* Device operations */

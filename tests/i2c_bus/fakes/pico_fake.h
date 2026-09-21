@@ -36,7 +36,7 @@ typedef struct {
 } pico_fake_xfer_t;
 
 typedef struct {
-    /* --- i2c_init / i2c_deinit / i2c_set_baudrate --- */
+    /* --- i2c_init / i2c_deinit / i2c_set_baudrate / i2c_set_slave_mode --- */
     unsigned    i2c_init_calls;
     i2c_inst_t *i2c_init_inst;
     uint        i2c_init_baud;
@@ -49,6 +49,11 @@ typedef struct {
     i2c_inst_t *i2c_set_baudrate_inst;
     uint        i2c_set_baudrate_baud;
     uint        i2c_set_baudrate_return;
+
+    unsigned    i2c_set_slave_mode_calls;
+    i2c_inst_t *i2c_set_slave_mode_inst;
+    bool        i2c_set_slave_mode_slave;
+    uint8_t     i2c_set_slave_mode_addr;
 
     /* --- gpio --- */
     unsigned            gpio_set_function_calls;

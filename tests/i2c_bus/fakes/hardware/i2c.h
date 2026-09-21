@@ -29,6 +29,9 @@ uint i2c_init(i2c_inst_t *i2c, uint baudrate);
 void i2c_deinit(i2c_inst_t *i2c);
 uint i2c_set_baudrate(i2c_inst_t *i2c, uint baudrate);
 uint i2c_hw_index(i2c_inst_t *i2c);
+/* `addr` is the address THIS controller answers to once slave is true,
+ * not the address of a peer on the bus. */
+void i2c_set_slave_mode(i2c_inst_t *i2c, bool slave, uint8_t addr);
 
 int i2c_write_blocking(i2c_inst_t *i2c, uint8_t addr, const uint8_t *src, size_t len, bool nostop);
 int i2c_read_blocking(i2c_inst_t *i2c, uint8_t addr, uint8_t *dst, size_t len, bool nostop);

@@ -87,6 +87,13 @@ uint i2c_set_baudrate(i2c_inst_t *i2c, uint baudrate) {
     return pico_fake.i2c_set_baudrate_return != 0 ? pico_fake.i2c_set_baudrate_return : baudrate;
 }
 
+void i2c_set_slave_mode(i2c_inst_t *i2c, bool slave, uint8_t addr) {
+    pico_fake.i2c_set_slave_mode_calls++;
+    pico_fake.i2c_set_slave_mode_inst = i2c;
+    pico_fake.i2c_set_slave_mode_slave = slave;
+    pico_fake.i2c_set_slave_mode_addr = addr;
+}
+
 uint i2c_hw_index(i2c_inst_t *i2c) {
     return i2c == i2c1 ? 1u : 0u;
 }
