@@ -173,9 +173,9 @@ i2c_status_t i2c_write(i2c_device_t *dev, const uint8_t *src, size_t len) {
     }
 }
 
-i2c_status_t ic2_write_read(i2c_device_t *dev, const uint8_t *src, uint8_t *dst, size_t len) {
+i2c_status_t ic2_write_read(i2c_device_t *dev, const uint8_t *src, uint8_t *dst, size_t write_len, size_t read_len) {
     /* Checking for non-existent device and other errors */
-    if (dev == NULL || src == NULL || dst == NULL || len == 0) {return i2c_arg_err;}
+    if (dev == NULL || src == NULL || dst == NULL || write_len == 0 || read_len == 0) {return i2c_arg_err;}
     if (dev->bus == NULL) {return i2c_dev_not_init;}
     if (!dev->bus->init) {return i2c_bus_not_init;}
 
@@ -184,7 +184,7 @@ i2c_status_t ic2_write_read(i2c_device_t *dev, const uint8_t *src, uint8_t *dst,
     if (status != i2c_ok) {return status;}
 
     /* Write to device */
-    int bytes_write = i2c_write_timeout_us(dev->bus->i2c, dev->addr, src, len, true, dev->bus->timeout);
+    int bytes_write = i2c_write_timeout_us(dev->bus->i2c, dev->addr, src, write_len, true, dev->bus->timeout);
     
     if (bytes_write == PICO_ERROR_GENERIC) {
         status = i2c_nack_err;
@@ -194,7 +194,7 @@ i2c_status_t ic2_write_read(i2c_device_t *dev, const uint8_t *src, uint8_t *dst,
 
     if (status == i2c_ok) {
         /* Read device */
-        int bytes_read = i2c_read_timeout_us(dev->bus->i2c, dev->addr, dst, len, false, dev->bus->timeout);
+        int bytes_read = i2c_read_timeout_us(dev->bus->i2c, dev->addr, dst, read_len, false, dev->bus->timeout);
     
         if (bytes_read == PICO_ERROR_GENERIC) {
             status = i2c_nack_err;
