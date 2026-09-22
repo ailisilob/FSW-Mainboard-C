@@ -33,8 +33,22 @@
 
 /* Init/Deinit */
 max17205_status_t max17205_init(max17205_t *dev, i2c_bus_t *bus) {
-    return max17205_bad;
+    if (dev == NULL || bus == NULL) {return max17205_arg_err;}
+    if (dev->init) {return max17205_arg_err;}
+    if (!bus->init) {return max17205_arg_err;}
+
+    if (i2c_device_init(&dev->main, bus, 0x36) != i2c_ok) {
+        return max17205_arg_err;
+    }
+
+    if (i2c_device_init(&dev->shadow, bus, 0x0B) != i2c_ok) {
+        return max17205_arg_err;
+    }
+
+    dev->init = true;
+    return max17205_ok;
 }
+
 max17205_status_t max17205_deinit(max17205_t *dev) {
     return max17205_bad;
 }

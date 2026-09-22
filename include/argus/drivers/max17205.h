@@ -19,7 +19,8 @@
 
 typedef enum {
     max17205_ok = 0,
-    max17205_bad
+    max17205_arg_err,
+    max17205_not_init
 } max17205_status_t;
 
 typedef struct {
