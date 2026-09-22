@@ -81,7 +81,7 @@ i2c_status_t i2c_set_mode(i2c_device_t *dev, bool slave);
 i2c_status_t i2c_device_init(i2c_device_t *dev, i2c_bus_t *bus, uint8_t addr);
 i2c_status_t i2c_read(i2c_device_t *dev, uint8_t *dst, size_t len);
 i2c_status_t i2c_write(i2c_device_t *dev, const uint8_t *src, size_t len);
-i2c_status_t ic2_write_read(i2c_device_t *dev, const uint8_t *src, uint8_t *dst, size_t len);
+i2c_status_t ic2_write_read(i2c_device_t *dev, const uint8_t *src, uint8_t *dst, size_t w_len, size_t r_len);
 
 /* Helper fxn for scanning devices on bus */
 i2c_status_t scan_bus(i2c_bus_t *bus);
